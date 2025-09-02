@@ -22,32 +22,21 @@ export const signin = (email, password) => async (dispatch) => {
   }
 };
 
-export const signup =
-  (
-    imgUrl,
-    password,
-    fullName,
-    phoneNumber,
-    gender,
-    dateOfBirthday,
-    locationId,
-    email
-  ) =>
-  async (dispatch) => {
+export const signup = (data) => async (dispatch) => {
     try {
       dispatch(AuthAction.loginRequest());
 
       const formData = new FormData();
-      if (imgUrl) {
-        formData.append("imgUrl", imgUrl);
+      if (data.imgUrl) {
+        formData.append("imgUrl", data.imgUrl);
       }
-      formData.append("email", email);
-      formData.append("fullName", fullName);
-      formData.append("phoneNumber", phoneNumber);
-      formData.append("gender", gender);
-      formData.append("dateOfBirthday", dateOfBirthday);
-      formData.append("locationId", locationId);
-      formData.append("password", password);
+      formData.append("email", data.email);
+      formData.append("fullName", data.fullName);
+      formData.append("phoneNumber", data.phoneNumber);
+      formData.append("gender", data.gender);
+      formData.append("dateOfBirthday", data.dateOfBirthday);
+      formData.append("locationId", data.locationId);
+      formData.append("password", data.password);
 
       const user = await axios.post(
         process.env.REACT_APP_API + "/register",
@@ -68,13 +57,32 @@ export const signup =
         )
       );
     }
-  };
+};
 
-export const signout = () => async (dispatch) => {
+export const signout = () => async () => {
   localStorage.removeItem("id");
   localStorage.removeItem("jwtToken");
   localStorage.removeItem("email");
   localStorage.removeItem("role");
   setAuthToken(false);
   window.location.href = "/login";
+};
+
+export const forgotPassword = (email) => async () => {
+  try {
+    await axios.put(process.env.REACT_APP_API + "/forgetPassword", { email });
+  } catch (error) {
+    alert(error);
+  }
+};
+
+export const resetPassword = (oldPassword, newPassword) => async () => {
+  try {
+    await axios.put(process.env.REACT_APP_API + "/changePassword", {
+      oldPassword,
+      newPassword,
+    });
+  } catch (error) {
+    alert(error);
+  }
 };
